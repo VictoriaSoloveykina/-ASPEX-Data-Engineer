@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Схема потоков данных</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .diagrams {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .diagram {
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fafafa;
+        }
+        
+        .diagram.as-is {
+            border-color: #dc3545;
+            background: #fffbf5;
+        }
+        
+        .diagram.to-be {
+            border-color: #28a745;
+        }
+        
+        .diagram-title {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 25px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .diagram-title.as-is {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .diagram-title.to-be {
+            background: #28a745;
+            color: white;
+        }
+        
+        .layer {
+            border: 2px dashed #999;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        
+        .layer-name {
+            font-size: 0.75em;
+            color: #666;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .systems {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .system {
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .system.paper {
+            border-color: #8B4513;
+            background: #FFF8DC;
+            border-style: dashed;
+        }
+        
+        .system.problem {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+        
+        .system.good {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+        
+        .system-name {
+            font-size: 1em;
+            margin-bottom: 3px;
+        }
+        
+        .system-tech {
+            font-size: 0.75em;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .arrow {
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .arrow-icon {
+            font-size: 2em;
+            line-height: 1;
+        }
+        
+        .arrow-icon.red {
+            color: #dc3545;
+        }
+        
+        .arrow-icon.green {
+            color: #28a745;
+        }
+        
+        .arrow-text {
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .arrow-text.red {
+            color: #dc3545;
+        }
+        
+        .arrow-text.green {
+            color: #28a745;
+        }
+        
+        .integration-box {
+            background: #fff5f5;
+            border: 3px solid #dc3545;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .integration-box.good {
+            background: #f0fff4;
+            border-color: #28a745;
+        }
+        
+        .integration-title {
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+        
+        .integration-items {
+            font-size: 0.75em;
+            line-height: 1.6;
+        }
+        
+        .central-platform {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 3px solid #5a67d8;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .platform-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .platform-tech {
+            font-size: 0.8em;
+            opacity: 0.9;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .tech-box {
+            background: rgba(255,255,255,0.2);
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 0.85em;
+        }
+        
+        .analytics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .analytics-box {
+            background: white;
+            border: 2px solid #28a745;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .metrics {
+            background: #fff9e6;
+            border: 2px solid #f4a300;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .metrics-title {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.75em;
+        }
+        
+        .metric {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .metric-label {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .metric-value {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .metric-value.good {
+            color: #28a745;
+        }
+        
+        .chaos-box {
+            background: #8B4513;
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 1400px) {
+            .diagrams {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">ЦИФРОВИЗАЦИЯ ЗАВОДА: Потоки данных</div>
+        <div class="subtitle">Завод Алекса Рого (1980-е) → Современная цифровая фабрика (2025)</div>
+        
+        <div class="diagrams">
+            <!-- AS IS - ЗАВОД 1980-х -->
+            <div class="diagram as-is">
+                <div class="diagram-title as-is">AS IS - ЗАВОД 1980-х (Книга "Цель")</div>
+                
+                <!-- Источники -->
+                <div class="layer">
+                    <div class="layer-name">ИСТОЧНИКИ ДАННЫХ (бумажные)</div>
+                    <div class="systems">
+                        <div class="system paper">
+                            <div class="system-name">Звонки</div>
+                            <div class="system-tech">Телефон</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">Заказы</div>
+                            <div class="system-tech">Бумага</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">Факсы</div>
+                            <div class="system-tech">Отдел продаж</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">Картотека</div>
+                            <div class="system-tech">Клиенты</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">Накладные</div>
+                            <div class="system-tech">Вручную</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">Журналы</div>
+                            <div class="system-tech">Учет</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Стрелка -->
+                <div class="arrow">
+                    <div class="arrow-icon red">↓</div>
+                    <div class="arrow-text red">ЛЮДИ ПЕРЕНОСЯТ<br>Пешком, бегом<br>Часы/дни задержки</div>
+                </div>
+                
+                <!-- Хаос -->
+                <div class="chaos-box">
+                    УПРАВЛЕНИЕ "ПО КРИКУ"<br>
+                    <span style="font-size: 0.8em;">Бил Пич звонит: "Закрою завод!"<br>
+                    Клиент Burnside: "Последний шанс!"<br>
+                    Завод убыточный. Угроза увольнений.</span>
+                </div>
+                
+                <!-- Обработка -->
+                <div class="integration-box">
+                    <div class="integration-title">ПОЖАРНАЯ КОМАНДА</div>
+                    <div class="integration-items">
+                        • Менеджер орёт: "ГДЕ МОЙ ЗАКАЗ?!"<br>
+                        • "Красные ярлыки" - срочные заказы<br>
+                        • Переделывают приоритеты 5 раз в день<br>
+                        • Все заказы "горят", все срочные<br>
+                        • Узкое место завалено работой (NCX-10)<br>
+                        • Производят огромными партиями<br>
+                        • Все работают 100%, throughput падает<br>
+                        • Детали теряются в горах WIP
+                    </div>
+                </div>
+                
+                <!-- Стрелка -->
+                <div class="arrow">
+                    <div class="arrow-icon red">↓</div>
+                    <div class="arrow-text red">ШКАФЫ С ПАПКАМИ</div>
+                </div>
+                
+                <!-- "Хранилище" -->
+                <div class="layer">
+                    <div class="layer-name">"Хранилище данных"</div>
+                    <div class="systems">
+                        <div class="system paper">
+                            <div class="system-name">Шкафы</div>
+                            <div class="system-tech">Папки</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">Картотека</div>
+                            <div class="system-tech">Карточки</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">Мейнфрейм</div>
+                            <div class="system-tech">Только зарплата</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Стрелка -->
+                <div class="arrow">
+                    <div class="arrow-icon red">↓</div>
+                    <div class="arrow-text red">РУЧНОЙ ПОИСК / РАСЧЁТЫ</div>
+                </div>
+                
+                <!-- Аналитика -->
+                <div class="layer">
+                    <div class="layer-name">"Аналитика" и принятие решений</div>
+                    <div class="systems">
+                        <div class="system paper">
+                            <div class="system-name">Счёты</div>
+                            <div class="system-tech">Себестоимость</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">Отчёт</div>
+                            <div class="system-tech">Месяц назад</div>
+                        </div>
+                        <div class="system paper">
+                            <div class="system-name">"Не знаю"</div>
+                            <div class="system-tech">Где заказ?</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Метрики -->
+                <div class="metrics">
+                    <div class="metrics-title">ЗАВОД НА ГРАНИ ЗАКРЫТИЯ</div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-label">Lead Time:</div>
+                            <div class="metric-value">4-6 месяцев!</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Срыв сроков:</div>
+                            <div class="metric-value">80% опаздывают</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Узкое место:</div>
+                            <div class="metric-value">Неизвестно (Герби?)</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Прибыль:</div>
+                            <div class="metric-value">УБЫТОК!</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">WIP запасы:</div>
+                            <div class="metric-value">На миллионы $</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Режим работы:</div>
+                            <div class="metric-value">ПОЖАРНАЯ КОМАНДА</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Приоритизация:</div>
+                            <div class="metric-value">"Красные ярлыки"</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Статус завода:</div>
+                            <div class="metric-value">Закроют через 3 мес</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Клиент Burnside:</div>
+                            <div class="metric-value">Угрожает уйти</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Эффективность:</div>
+                            <div class="metric-value">100% - но нет прибыли!</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Throughput:</div>
+                            <div class="metric-value">Падает каждый месяц</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Бил Пич звонит:</div>
+                            <div class="metric-value">"Где результаты?!"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TO BE - 2025 -->
+            <div class="diagram to-be">
+                <div class="diagram-title to-be">TO BE - ЦИФРОВОЙ ЗАВОД 2025</div>
+                
+                <!-- Источники -->
+                <div class="layer">
+                    <div class="layer-name">ИСТОЧНИКИ ДАННЫХ (digital)</div>
+                    <div class="systems">
+                        <div class="system good">
+                            <div class="system-name">CRM</div>
+                            <div class="system-tech">REST API</div>
+                        </div>
+                        <div class="system good">
+                            <div class="system-name">ERP</div>
+                            <div class="system-tech">REST API</div>
+                        </div>
+                        <div class="system good">
+                            <div class="system-name">MES</div>
+                            <div class="system-tech">REST API</div>
+                        </div>
+                        <div class="system good">
+                            <div class="system-name">WMS</div>
+                            <div class="system-tech">REST API</div>
+                        </div>
+                        <div class="system good">
+                            <div class="system-name">SCADA</div>
+                            <div class="system-tech">OPC UA</div>
+                        </div>
+                        <div class="system good">
+                            <div class="system-name">TMS</div>
+                            <div class="system-tech">REST API</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Стрелка -->
+                <div class="arrow">
+                    <div class="arrow-icon green">↓</div>
+                    <div class="arrow-text green">API INTEGRATION<br>Автоматически<br>&lt; 1 секунда</div>
+                </div>
+                
+                <!-- Интеграция -->
+                <div class="integration-box good">
+                    <div class="integration-title">ИНТЕГРАЦИЯ</div>
+                    <div class="integration-items">
+                        <strong>Apache Kafka</strong> - real-time потоки<br>
+                        <strong>Apache Airflow</strong> - автоматизация ETL<br>
+                        <strong>dbt</strong> - трансформации SQL<br>
+                        <strong>Great Expectations</strong> - валидация<br>
+                        Единый ID заказа через все системы
+                    </div>
+                </div>
+                
+                <!-- Стрелка -->
+                <div class="arrow">
+                    <div class="arrow-icon green">↓</div>
+                    <div class="arrow-text green">DATA LAKEHOUSE</div>
+                </div>
+                
+                <!-- Платформа -->
+                <div class="central-platform">
+                    <div class="platform-title">ЕДИНАЯ ПЛАТФОРМА ДАННЫХ</div>
+                    <div style="font-size: 0.85em; margin-top: 8px;">
+                        Все данные в одном месте. Real-time доступ.
+                    </div>
+                    <div class="platform-tech">
+                        <div class="tech-box">PostgreSQL<br><span style="font-size: 0.8em;">Транзакции</span></div>
+                        <div class="tech-box">ClickHouse<br><span style="font-size: 0.8em;">Аналитика</span></div>
+                        <div class="tech-box">S3 / MinIO<br><span style="font-size: 0.8em;">Data Lake</span></div>
+                    </div>
+                </div>
+                
+                <!-- Стрелка -->
+                <div class="arrow">
+                    <div class="arrow-icon green">↓</div>
+                    <div class="arrow-text green">REAL-TIME API</div>
+                </div>
+                
+                <!-- Аналитика -->
+                <div class="layer">
+                    <div class="layer-name">АНАЛИТИКА И ВИЗУАЛИЗАЦИЯ</div>
+                    <div class="analytics">
+                        <div class="analytics-box">
+                            Power BI<br>
+                            <span style="font-size: 0.85em; font-weight: normal;">Дашборды</span>
+                        </div>
+                        <div class="analytics-box">
+                            Real-time Alerts<br>
+                            <span style="font-size: 0.85em; font-weight: normal;">Telegram/Email</span>
+                        </div>
+                        <div class="analytics-box">
+                            AI/ML<br>
+                            <span style="font-size: 0.85em; font-weight: normal;">Прогнозы</span>
+                        </div>
+                        <div class="analytics-box">
+                            Self-service<br>
+                            <span style="font-size: 0.85em; font-weight: normal;">Портал клиентов</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Метрики -->
+                <div class="metrics">
+                    <div class="metrics-title">📈 ПОКАЗАТЕЛИ ПОСЛЕ ЦИФРОВИЗАЦИИ</div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-label">⏱️ Обработка:</div>
+                            <div class="metric-value good">2-3 дня ↓86%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">🎯 Точность сроков:</div>
+                            <div class="metric-value good">92% ↑130%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">⏸️ Простой bottleneck:</div>
+                            <div class="metric-value good">0.5 ч ↓93%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">💰 Себестоимость:</div>
+                            <div class="metric-value good">Real-time</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">📍 Где заказ?</div>
+                            <div class="metric-value good">Видно онлайн</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">⚠️ Ошибки:</div>
+                            <div class="metric-value good">2-3% ↓93%</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">🎯 Узкое место:</div>
+                            <div class="metric-value good">Видно на дашборде</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">📦 Запасы WIP:</div>
+                            <div class="metric-value good">2 недели ↓92%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
